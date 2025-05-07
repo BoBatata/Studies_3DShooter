@@ -10,10 +10,10 @@ public class InputManager : MonoBehaviour
 
     public InputManager(){
         inputControls = new InputControls();
-        EnablePlayerInput();
+        EnableInput();
     }
 
 
-    public void EnablePlayerInput() => inputControls.Move.Enable();
-    public void DisablePlayerInput() => inputControls.Move.Disable();
+    public void EnableInput() => inputControls.Enable();
+    public void DisableInput() => inputControls.Disable();
 }
