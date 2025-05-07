@@ -178,6 +178,34 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 }
             ]
+        },
+        {
+            ""name"": ""Shoot"",
+            ""id"": ""5623aa64-2b78-4d96-a119-48eff4ec3ea3"",
+            ""actions"": [
+                {
+                    ""name"": ""Fire"",
+                    ""type"": ""Button"",
+                    ""id"": ""db186448-6797-495d-a415-f6c7152d0ef6"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""f2ad85f9-3dc5-4579-b4df-3d14f3062eb5"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Fire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -186,11 +214,15 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
         m_Move = asset.FindActionMap("Move", throwIfNotFound: true);
         m_Move_Walk = m_Move.FindAction("Walk", throwIfNotFound: true);
         m_Move_Jump = m_Move.FindAction("Jump", throwIfNotFound: true);
+        // Shoot
+        m_Shoot = asset.FindActionMap("Shoot", throwIfNotFound: true);
+        m_Shoot_Fire = m_Shoot.FindAction("Fire", throwIfNotFound: true);
     }
 
     ~@InputControls()
     {
         UnityEngine.Debug.Assert(!m_Move.enabled, "This will cause a leak and performance issues, InputControls.Move.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_Shoot.enabled, "This will cause a leak and performance issues, InputControls.Shoot.Disable() has not been called.");
     }
 
     /// <summary>
@@ -369,6 +401,102 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
     /// Provides a new <see cref="MoveActions" /> instance referencing this action map.
     /// </summary>
     public MoveActions @Move => new MoveActions(this);
+
+    // Shoot
+    private readonly InputActionMap m_Shoot;
+    private List<IShootActions> m_ShootActionsCallbackInterfaces = new List<IShootActions>();
+    private readonly InputAction m_Shoot_Fire;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "Shoot".
+    /// </summary>
+    public struct ShootActions
+    {
+        private @InputControls m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public ShootActions(@InputControls wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "Shoot/Fire".
+        /// </summary>
+        public InputAction @Fire => m_Wrapper.m_Shoot_Fire;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_Shoot; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="ShootActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(ShootActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="ShootActions" />
+        public void AddCallbacks(IShootActions instance)
+        {
+            if (instance == null || m_Wrapper.m_ShootActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_ShootActionsCallbackInterfaces.Add(instance);
+            @Fire.started += instance.OnFire;
+            @Fire.performed += instance.OnFire;
+            @Fire.canceled += instance.OnFire;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="ShootActions" />
+        private void UnregisterCallbacks(IShootActions instance)
+        {
+            @Fire.started -= instance.OnFire;
+            @Fire.performed -= instance.OnFire;
+            @Fire.canceled -= instance.OnFire;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="ShootActions.UnregisterCallbacks(IShootActions)" />.
+        /// </summary>
+        /// <seealso cref="ShootActions.UnregisterCallbacks(IShootActions)" />
+        public void RemoveCallbacks(IShootActions instance)
+        {
+            if (m_Wrapper.m_ShootActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="ShootActions.AddCallbacks(IShootActions)" />
+        /// <seealso cref="ShootActions.RemoveCallbacks(IShootActions)" />
+        /// <seealso cref="ShootActions.UnregisterCallbacks(IShootActions)" />
+        public void SetCallbacks(IShootActions instance)
+        {
+            foreach (var item in m_Wrapper.m_ShootActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_ShootActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="ShootActions" /> instance referencing this action map.
+    /// </summary>
+    public ShootActions @Shoot => new ShootActions(this);
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Move" which allows adding and removing callbacks.
     /// </summary>
@@ -390,5 +518,20 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnJump(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Shoot" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="ShootActions.AddCallbacks(IShootActions)" />
+    /// <seealso cref="ShootActions.RemoveCallbacks(IShootActions)" />
+    public interface IShootActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "Fire" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnFire(InputAction.CallbackContext context);
     }
 }
