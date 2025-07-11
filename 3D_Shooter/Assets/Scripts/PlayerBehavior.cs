@@ -31,7 +31,22 @@ public class PlayerBehavior : MonoBehaviour
     void Update()
     {
         WalkHandler();
+        RotateHanlder();
     }
+
+    private void RotateHanlder()
+    {
+        Vector3 positionToLookAt = Camera.main.transform.rotation * Vector3.forward;
+
+        // positionToLookAt.x = currentMovement.x;
+        // positionToLookAt.y = 0.0f;
+        // positionToLookAt.z = currentMovement.z;
+
+        Quaternion currentRotation = transform.rotation;
+        Quaternion targetRotation = Quaternion.LookRotation(positionToLookAt);
+        transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, 10 * Time.deltaTime);
+    }
+
 
     private void WalkHandler()
     {
