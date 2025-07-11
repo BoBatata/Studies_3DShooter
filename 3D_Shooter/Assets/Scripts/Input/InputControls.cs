@@ -191,7 +191,7 @@ public partial class @InputControls: IInputActionCollection2, IDisposable
                     ""id"": ""33da3894-34a9-4a68-be62-2117b0a726a7"",
                     ""path"": ""<Pointer>/delta"",
                     ""interactions"": """",
-                    ""processors"": ""ScaleVector2(x=3,y=3)"",
+                    ""processors"": ""DeltaTimeScale,ScaleVector2(x=0.5,y=0.5)"",
                     ""groups"": """",
                     ""action"": ""Aim"",
                     ""isComposite"": false,
