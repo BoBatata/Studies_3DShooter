@@ -2,11 +2,9 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
-public class PlayerBehavior : MonoBehaviour
+public class PlayerMovement : MonoBehaviour
 {
     private InputControls inputControls;
-
     private Rigidbody rb;
 
     [Header("Movement Variables")]
@@ -23,7 +21,7 @@ public class PlayerBehavior : MonoBehaviour
     void Start()
     {
         inputControls = GameManager.instance.inputManager.inputControls;
-
+        
         inputControls.Move.Jump.performed += JumpHandler;
         inputControls.Move.Jump.canceled += JumpHandler;
     }
@@ -71,4 +69,5 @@ public class PlayerBehavior : MonoBehaviour
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
         }
     }
+
 }

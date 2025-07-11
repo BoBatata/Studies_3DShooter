@@ -1595,6 +1595,7 @@ GameObject:
   - component: {fileID: 2114169915}
   - component: {fileID: 2114169919}
   - component: {fileID: 2114169920}
+  - component: {fileID: 2114169922}
   - component: {fileID: 2114169921}
   m_Layer: 0
   m_Name: '[PlaceHolder] Player'
@@ -1735,8 +1736,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4430e1094d6f587408bf2f945ea7ecbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
-  jumpForce: 10
 --- !u!114 &2114169921
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1755,6 +1754,20 @@ MonoBehaviour:
     m_Bits: 128
   bulletDirDebug: {fileID: 815415354}
   bulletTrail: {fileID: 3749139328024894060, guid: 5fb1952522c2a124489cabb8ac8ec481, type: 3}
+--- !u!114 &2114169922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2114169914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 120f1df8410c713459e95b42f49a7a2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 5
+  jumpForce: 5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
