@@ -16,5 +16,7 @@ public class GameManager : MonoBehaviour
         }
 
         inputManager = new InputManager();
+        
+        Cursor.visible = false;
     }
 }

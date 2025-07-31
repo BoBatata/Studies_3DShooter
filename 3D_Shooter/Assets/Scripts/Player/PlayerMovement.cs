@@ -66,11 +66,6 @@ public class PlayerMovement : MonoBehaviour
 
         cameraForward.y = 0;
         cameraRight.y = 0;
-
-        // Vector3 cameraForwardZ = cameraForward * directionMove.z;
-        // Vector3 cameraRightX = cameraRight * directionMove.x;
-        //
-        // Vector3 directionToMovePlayer = cameraForwardZ + cameraRightX;
         
         Vector3 cameraMove = (cameraForward * directionMove.y + cameraRight * directionMove.x).normalized;
 
