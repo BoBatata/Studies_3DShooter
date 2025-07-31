@@ -53,10 +53,30 @@ public class PlayerMovement : MonoBehaviour
         currentMoveDir.x = moveDir.x;
         currentMoveDir.y = rb.linearVelocity.y;
         currentMoveDir.z = moveDir.y;
+        
+        Vector3 cameraRelativeDir = ConvertMoveDirectionToCameraSpace(moveDir);
 
-        rb.linearVelocity = new Vector3(currentMoveDir.x * speed, currentMoveDir.y, currentMoveDir.z * speed);
+        rb.linearVelocity = new Vector3(cameraRelativeDir.x * speed, currentMoveDir.y, cameraRelativeDir.z * speed);
     }
+    
+    private Vector3 ConvertMoveDirectionToCameraSpace(Vector3 directionMove)
+    {
+        Vector3 cameraForward = Camera.main.transform.forward;
+        Vector3 cameraRight = Camera.main.transform.right;
 
+        cameraForward.y = 0;
+        cameraRight.y = 0;
+
+        // Vector3 cameraForwardZ = cameraForward * directionMove.z;
+        // Vector3 cameraRightX = cameraRight * directionMove.x;
+        //
+        // Vector3 directionToMovePlayer = cameraForwardZ + cameraRightX;
+        
+        Vector3 cameraMove = (cameraForward * directionMove.y + cameraRight * directionMove.x).normalized;
+
+        return cameraMove;
+    }
+    
     private void JumpHandler(InputAction.CallbackContext obj)
     {
         if (obj.performed)
